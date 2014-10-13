@@ -66,7 +66,7 @@ if sys.argv[1] not in github_dict:
     print
     sys.exit()
 
-repo_git = "http://github.com/" + github_dict[sys.argv[1]] + "/ptavi-p3"
+repo_git = "http://github.com/" + github_dict[sys.argv[1]] + "/ptavi-p4"
 
 files = ['README.md',
          'LICENSE',
