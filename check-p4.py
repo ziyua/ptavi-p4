@@ -44,7 +44,15 @@ github_dict = {
     "albagc": "albagcs",
     "rpablos": "raquelpt",
     "cgarcia": "celiagarcia",
-    "lyanezgu": "lyanezgu"
+    "lyanezgu": "lyanezgu",
+    "omarled": "auronff10",
+    "roger": "rogerurrutia",
+    "lsoria": "lsoriai",
+    "zhiyuan": "ziyua",
+    "mcapitan": "mcapitan",
+    "juanmis": "Jmita", 
+    "molina": "jmartinezmolina",
+    "afrutos": "alejandrodefrutos"
 }
 
 if len(sys.argv) != 2:
