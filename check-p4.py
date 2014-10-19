@@ -5,7 +5,7 @@
 Script de comprobación de entrega de práctica
 
 Para ejecutarlo, desde la shell: 
- $ python check-p4.py repo_github
+ $ python check-p4.py login_laboratorio
 
 """
 
@@ -52,7 +52,7 @@ github_dict = {
     "mcapitan": "mcapitan",
     "juanmis": "Jmita", 
     "molina": "jmartinezmolina",
-    "afrutos": "alejandrodefrutos"
+    "afrutos": "alejandrodefrutos",
 }
 
 if len(sys.argv) != 2:
