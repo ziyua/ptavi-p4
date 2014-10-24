@@ -8,6 +8,16 @@ import socket
 import sys
 
 # Cliente UDP simple.
+"""
+client envia
+Protocol SIP:
+    REGISTER sip:name@email.com SIP/2.0\r\n
+    Expires: 3600\r\n
+    \r\n
+Receibe:
+    SIP/2.0 200 OK\r\n
+    \r\n
+"""
 
 if len(sys.argv) != 6:
     sys.exit('Usage: client.py ip puerto register sip_address expires_value')
