@@ -6,12 +6,15 @@ en UDP simple
 """
 
 import SocketServer
+import socket
 
 
-class EchoHandler(SocketServer.DatagramRequestHandler):
+class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     """
     Echo server class
     """
+
+    dic = {}
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
@@ -21,12 +24,19 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read().strip()
-            print "El cliente nos manda " + line
+            if line[:8] == 'REGISTER':
+                self.dic[line.split()[1]] = self.client_address
+                print "Dic is: ", self.dic
+                # Send Messages
+                my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                my_socket.connect(self.client_address)
+                my_socket.send('SIP/2.0 200 OK\r\n\r\n')
             if not line:
                 break
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", 6001), EchoHandler)
+    serv = SocketServer.UDPServer(("", 6001), SIPRegisterHandler)
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()
