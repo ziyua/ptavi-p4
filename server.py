@@ -6,7 +6,6 @@ en UDP simple
 """
 
 import SocketServer
-import socket
 
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
@@ -18,7 +17,7 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write("Hemos recibido tu peticion")
+        self.wfile.write('SIP/2.0 200 OK\r\n\r\n')
         clientIP, clientPort = self.client_address
         print 'client IP: ' + clientIP + ':' + str(clientPort)
         while 1:
@@ -27,11 +26,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
             if line[:8] == 'REGISTER':
                 self.dic[line.split()[1]] = self.client_address
                 print "Dic is: ", self.dic
-                # Send Messages
-                my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                my_socket.connect(self.client_address)
-                my_socket.send('SIP/2.0 200 OK\r\n\r\n')
             if not line:
                 break
 
