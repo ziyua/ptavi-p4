@@ -17,14 +17,17 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write('SIP/2.0 200 OK\r\n\r\n')
         clientIP, clientPort = self.client_address
         print 'client IP: ' + clientIP + ':' + str(clientPort)
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read().strip()
-            if line[:8] == 'REGISTER':
-                self.dic[line.split()[1]] = self.client_address
+            if line[:8] == 'REGISTER' and line.split()[-2] == 'Expires:':
+                if line.split()[-1] != '0':
+                    self.dic[line.split()[1]] = self.client_address
+                elif line.split()[1] in self.dic:
+                    del self.dic[line.split()[1]]
+                self.wfile.write('SIP/2.0 200 OK\r\n\r\n')
                 print "Dic is: ", self.dic
             if not line:
                 break
