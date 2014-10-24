@@ -17,7 +17,7 @@ SERVER = sys.argv[1]
 PORT = int(sys.argv[2])
 
 # Contenido que vamos a enviar
-LINE = sys.argv[3].upper() + ' ' + sys.argv[4] + ' ' + 'SIP/2.0\r\n'
+LINE = sys.argv[3].upper() + ' sip:' + sys.argv[4] + ' ' + 'SIP/2.0\r\n'
 EXPIRES = 'Expires:' + ' ' + sys.argv[5] + '\r\n'
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
