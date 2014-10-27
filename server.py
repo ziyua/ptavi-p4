@@ -6,7 +6,6 @@ en UDP simple
 """
 
 import SocketServer
-import os
 import time
 
 
@@ -19,50 +18,51 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 
     def handle(self):
         """
-        1. Imprima IP:port de client
-        2. Recibir
-        "REGISTER sip:luke@polismassa.com SIP/2.0\r\nExpires: 3600\r\n\r\n"
-        3. Si message correcta ->
-            User = luke@polismassa.com; Expires = 3600
-        4. Expires no es igual a 0 -> add diccionario 'Users';
-                             si es -> del diccionario 'Users';
-                                    si no exist en dic 'Pass';
-                       Luego envia -> SIP/2.0 200 OK\r\n\r\n ;
-                                escribir en 'registered.txt' ;
+        Receive message and processa.
         """
         # Escribe dirección y puerto del cliente (de tupla client_address)
         clientIP, clientPort = self.client_address
         print 'client IP: ' + clientIP + ':' + str(clientPort)
+        # Find user expired and Delete.
+        for user in self.Users.keys():
+            if time.time() > self.Users[user]['Expires']:
+                del self.Users[user]
+        # Leer informacion recibida.
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read().strip()
             if line[:8] == 'REGISTER' and line.split()[-2] == 'Expires:':
-                #User and time expired
-                User = line.split()[1].lstrip('sip:')
+                # User and time expired
+                User = line.split()[1][4:]
                 Expires = int(line.split()[-1])
+                # processa
                 if Expires != 0:
-                    self.Users[User] = self.client_address
+                    # Añade user in diccionario Users.
+                    self.Users[User] = {}
+                    self.Users[User]['IP'] = self.client_address
+                    self.Users[User]['Expires'] = time.time() + Expires
                 elif User in self.Users:
+                    # si user en tabla Users, borra. si no, pass.
                     del self.Users[User]
+                # send message.
                 self.wfile.write('SIP/2.0 200 OK\r\n\r\n')
-                self.register2file(User, clientIP)
+                self.register2file()
                 print "Users is: ", self.Users
             if not line:
                 break
 
-    def register2file(self, User, IP):
+    def register2file(self):
         """
-            si exist 'registered.txt' añade info.
-            no exist añade 'User \t IP \t Expires \r\n'
-                     añade info.
+        register users in file
         """
-        if os.path.exists(self.LOG_NAME):
-            log_file = open(self.LOG_NAME, 'a')
-        else:
-            log_file = open(self.LOG_NAME, 'w')
-            log_file.write('User \t IP \t Expires \r\n')
-        now = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time()))
-        log_file.write(User + ' \t ' + IP + ' \t ' + now + '\r\n')
+        log_file = open(self.LOG_NAME, 'w')
+        log_file.write('User \t IP \t Expires \r\n')
+        for user in self.Users:
+            log_file.write(user + ' \t ' +
+                           self.Users[user]['IP'][0] + ' \t ' +
+                           time.strftime('%Y-%m-%d %H:%M:%S',
+                                         time.gmtime(self.Users[user]['Expires'])) +
+                           '\r\n')
         log_file.close()
 
 
