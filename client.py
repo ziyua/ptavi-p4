@@ -24,11 +24,19 @@ if len(sys.argv) != 6:
 
 # Dirección IP del servidor.
 SERVER = sys.argv[1]
-PORT = int(sys.argv[2])
+#  Por si se introduce un parámetro no numérico en "PORT"
+try:
+    PORT = int(sys.argv[2])
+except ValueError:
+    sys.exit('Usage: client.py ip puerto register sip_address expires_value')
 
 # Contenido que vamos a enviar
-LINE = sys.argv[3].upper() + ' sip:' + sys.argv[4] + ' ' + 'SIP/2.0\r\n'
-EXPIRES = 'Expires:' + ' ' + sys.argv[5] + '\r\n'
+# Por si acaso el usuario introduce otro método que no sea 'register'
+if sys.argv[3] == 'register':
+    LINE = sys.argv[3].upper() + ' sip:' + sys.argv[4] + ' ' + 'SIP/2.0\r\n'
+    EXPIRES = 'Expires:' + ' ' + sys.argv[5] + '\r\n'
+else:
+    sys.exit('Usage: client.py ip puerto register sip_address expires_value')
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
