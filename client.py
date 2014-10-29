@@ -25,11 +25,7 @@ if len(sys.argv) != 6:
 # Dirección IP del servidor.
 SERVER = sys.argv[1]
 #  Por si se introduce un parámetro no numérico en "PORT"
-try:
-    PORT = int(sys.argv[2])
-except ValueError:
-    sys.exit('Usage: client.py ip puerto register sip_address expires_value')
-
+PORT = int(sys.argv[2])
 # Contenido que vamos a enviar
 # Por si acaso el usuario introduce otro método que no sea 'register'
 if sys.argv[3] == 'register':
